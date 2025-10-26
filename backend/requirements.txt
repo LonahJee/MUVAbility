@@ -1,0 +1,13 @@
+# Workspace version: 1.49.0
+python-multipart==0.0.9
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+databutton==0.38.34
+ipykernel==6.29.5
+openai
+beautifulsoup4
+requests
+google-cloud-firestore
+numpy
+tensorflow
+firebase-admin
