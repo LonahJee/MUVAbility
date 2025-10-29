@@ -12,7 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import brain from "brain";
-import { RiskAssessmentResponse } from "types";
+
+// Define the new response type from the backend
+interface NeuralNetworkResponse {
+  risk_probability: number;
+  has_heart_disease: boolean;
+}
 
 const CardiovascularRisk = () => {
   const navigate = useNavigate();
@@ -29,7 +34,7 @@ const CardiovascularRisk = () => {
   const [slope, setSlope] = useState<string>("1");
   const [numMajorVessels, setNumMajorVessels] = useState<string>("0");
 
-  const [result, setResult] = useState<RiskAssessmentResponse | null>(null);
+  const [result, setResult] = useState<NeuralNetworkResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,7 +60,7 @@ const CardiovascularRisk = () => {
       });
 
       if (response.ok) {
-        const data: RiskAssessmentResponse = await response.json();
+        const data: NeuralNetworkResponse = await response.json();
         setResult(data);
       } else {
         const errorData = await response.json();
@@ -241,14 +246,18 @@ const CardiovascularRisk = () => {
           <CardHeader>
             <CardTitle>Assessment Result</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 py-12">
-            <p className="font-medium">{result.message}</p>
-            <p className="text-sm text-gray-600">
-              <span className="font-bold">Model Risk Score:</span>{" "}
-              {result.risk_score.toFixed(4)}
+          <CardContent className="space-y-4 py-12 text-center">
+            <p className="text-lg font-medium">
+              Risk of Heart Disease:
             </p>
-            <p className="text-xs text-red-700 p-2 bg-red-50 rounded-md">
-              <span className="font-bold">Disclaimer:</span> {result.disclaimer}
+            <p className={`text-5xl font-bold ${result.has_heart_disease ? 'text-red-600' : 'text-green-600'}`}>
+              {(result.risk_probability * 100).toFixed(1)}%
+            </p>
+            <p className={`text-xl font-semibold ${result.has_heart_disease ? 'text-red-500' : 'text-green-500'}`}>
+              {result.has_heart_disease ? "High Risk" : "Low Risk"}
+            </p>
+            <p className="text-xs text-gray-500 pt-4">
+              <span className="font-bold">Disclaimer:</span> This is not a real medical assessment. Consult a doctor for any health concerns.
             </p>
           </CardContent>
         </Card>
