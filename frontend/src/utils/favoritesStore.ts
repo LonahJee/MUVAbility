@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { firebaseDb } from "app";
 
-// This will hold the function to stop listening to Firestore changes
+
 let unsubscribe: Unsubscribe | null = null;
 
 interface FavoritesState {
@@ -26,9 +26,9 @@ const useFavoritesStore = create<FavoritesState>()(
       favoriteIds: [],
       loading: false,
 
-      // Action to load favorites from Firestore in real-time
+      
       loadFavorites: (userId) => {
-        if (unsubscribe) unsubscribe(); // Stop any previous listener
+        if (unsubscribe) unsubscribe();
 
         set({ loading: true });
         const docRef = doc(firebaseDb, "favorites", userId);
@@ -56,20 +56,20 @@ const useFavoritesStore = create<FavoritesState>()(
           updatedFavorites = [...currentFavorites, exerciseId];
         }
 
-        // Optimistically update the local state for instant UI feedback
+        
         set({ favoriteIds: updatedFavorites });
 
-        // Update the document in Firestore
+
         try {
           await setDoc(docRef, { exerciseIds: updatedFavorites }, { merge: true });
         } catch (error) {
           console.error("Failed to update favorites in Firestore:", error);
-          // If the update fails, revert the optimistic change
+          
           set({ favoriteIds: currentFavorites });
         }
       },
 
-      // Action to clean up when the user logs out
+      
       clearFavorites: () => {
         if (unsubscribe) unsubscribe();
         set({ favoriteIds: [], loading: false });
@@ -77,7 +77,7 @@ const useFavoritesStore = create<FavoritesState>()(
       },
     }),
     {
-      // Configuration for localStorage persistence
+      
       name: "muvability-favorites-storage",
       storage: createJSONStorage(() => localStorage),
     }

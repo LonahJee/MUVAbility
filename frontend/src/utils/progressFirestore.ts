@@ -12,9 +12,9 @@ import {
   updateDoc,
   addDoc,
   Timestamp,
-  getFirestore, // FIX: Import the getFirestore function
+  getFirestore, 
 } from "firebase/firestore";
-import { firebaseApp } from "app"; // FIX: Import the initialized Firebase app
+import { firebaseApp } from "app"; 
 import {
   WorkoutLog,
   ExerciseLog,
@@ -24,7 +24,7 @@ import {
 } from "./progressTypes";
 
 const WORKOUT_LOGS_COLLECTION = "workoutLogs";
-const db = getFirestore(firebaseApp); // FIX: Get the Firestore instance correctly
+const db = getFirestore(firebaseApp); 
 
 // Add a new workout log
 export const addWorkoutLog = async (
@@ -53,7 +53,7 @@ export const updateWorkoutLog = async (logId: string, workoutData: Partial<Worko
   try {
     const workoutRef = doc(db, WORKOUT_LOGS_COLLECTION, logId);
     
-    // Format date if it's present
+    
     const updates: any = {
       ...workoutData,
       updatedAt: Timestamp.now()
@@ -158,15 +158,15 @@ export const getUserProgressStats = async (userId: string): Promise<{
       };
     }
     
-    // Sort logs by date (newest first)
+    
     const sortedLogs = [...logs.logs].sort((a, b) => {
       return new Date(b.date).getTime() - new Date(a.date).getTime();
     });
     
-    // Calculate streaks
+    // Streak function for 2.0
     const streakData = calculateStreaks(sortedLogs);
     
-    // Calculate exercise progress
+    
     const exerciseProgress = calculateExerciseProgress(sortedLogs);
     
     const stats: ProgressStats = {
@@ -184,22 +184,22 @@ export const getUserProgressStats = async (userId: string): Promise<{
   }
 };
 
-// Helper function to calculate streaks
+
 const calculateStreaks = (logs: WorkoutLog[]): { currentStreak: number; longestStreak: number } => {
   if (logs.length === 0) {
     return { currentStreak: 0, longestStreak: 0 };
   }
   
-  // Convert all dates to local date strings to handle date comparisons properly
+
   const workoutDates = logs.map(log => {
     const date = new Date(log.date);
     return date.toLocaleDateString();
   });
   
-  // Remove duplicate dates (if more than one workout on the same day)
+  
   const uniqueDates = [...new Set(workoutDates)];
   
-  // Sort dates (newest first)
+
   uniqueDates.sort((a, b) => {
     return new Date(b).getTime() - new Date(a).getTime();
   });
@@ -209,16 +209,16 @@ const calculateStreaks = (logs: WorkoutLog[]): { currentStreak: number; longestS
   const today = new Date().toLocaleDateString();
   const yesterday = new Date(Date.now() - 86400000).toLocaleDateString();
   
-  // Check if there's a workout today or yesterday to start the streak calculation
+  
   if (uniqueDates[0] === today || uniqueDates[0] === yesterday) {
     currentStreak = 1;
     
-    // Calculate the rest of the streak
+    
     for (let i = 1; i < uniqueDates.length; i++) {
       const currentDate = new Date(uniqueDates[i - 1]);
       const prevDate = new Date(uniqueDates[i]);
       
-      // Check if the dates are consecutive
+      
       const diffTime = currentDate.getTime() - prevDate.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
       
@@ -230,7 +230,7 @@ const calculateStreaks = (logs: WorkoutLog[]): { currentStreak: number; longestS
     }
   }
   
-  // Calculate longest streak
+
   let longestStreak = 0;
   let tempStreak = 1;
   
@@ -238,7 +238,7 @@ const calculateStreaks = (logs: WorkoutLog[]): { currentStreak: number; longestS
     const currentDate = new Date(uniqueDates[i - 1]);
     const prevDate = new Date(uniqueDates[i]);
     
-    // Check if the dates are consecutive
+
     const diffTime = currentDate.getTime() - prevDate.getTime();
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     
@@ -252,25 +252,25 @@ const calculateStreaks = (logs: WorkoutLog[]): { currentStreak: number; longestS
   
   longestStreak = Math.max(longestStreak, tempStreak);
   
-  // Ensure current streak doesn't exceed longest streak
+  
   currentStreak = Math.min(currentStreak, longestStreak);
   
   return { currentStreak, longestStreak };
 };
 
-// Helper function to calculate exercise progress
+
 const calculateExerciseProgress = (logs: WorkoutLog[]): ExerciseProgress[] => {
   if (logs.length === 0) return [];
   
   const exerciseMap = new Map<string, ExerciseProgress>();
   
-  // Process each log
+
   logs.forEach(log => {
     const logDate = new Date(log.date);
     
     log.exercises.forEach(exercise => {
       if (!exerciseMap.has(exercise.exerciseId)) {
-        // Initialize with the first encounter
+
         exerciseMap.set(exercise.exerciseId, {
           exerciseId: exercise.exerciseId,
           exerciseName: exercise.exerciseName,
@@ -296,10 +296,10 @@ const calculateExerciseProgress = (logs: WorkoutLog[]): ExerciseProgress[] => {
           }
         });
       } else {
-        // Update existing entry
+       
         const existingProgress = exerciseMap.get(exercise.exerciseId)!;
         
-        // Check if this is a more recent log
+        
         if (logDate > existingProgress.lastLog.date) {
           existingProgress.lastLog = {
             date: logDate,
@@ -310,7 +310,7 @@ const calculateExerciseProgress = (logs: WorkoutLog[]): ExerciseProgress[] => {
           };
         }
         
-        // Check if this is an earlier log
+
         if (logDate < existingProgress.firstLog.date) {
           existingProgress.firstLog = {
             date: logDate,
@@ -321,7 +321,7 @@ const calculateExerciseProgress = (logs: WorkoutLog[]): ExerciseProgress[] => {
           };
         }
         
-        // Update improvement calculations
+
         const improvement = {
           weight: calculateImprovement(
             existingProgress.firstLog.maxWeight || 0, 
@@ -350,7 +350,7 @@ const calculateExerciseProgress = (logs: WorkoutLog[]): ExerciseProgress[] => {
   return Array.from(exerciseMap.values());
 };
 
-// Helper functions to get max values from sets
+
 const getMaxWeight = (exercise: ExerciseLog): number => {
   if (!exercise.sets || exercise.sets.length === 0) return 0;
   return Math.max(...exercise.sets.map(set => set.weight || 0));

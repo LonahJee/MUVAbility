@@ -4,7 +4,7 @@ from typing import List, Optional
 import databutton as db
 from openai import OpenAI
 
-# This API is not protected, so anyone can access it
+
 router = APIRouter()
 
 # Initialize OpenAI client with API key from secrets

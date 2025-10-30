@@ -56,7 +56,7 @@ interface ProgressState {
 }
 
 export const useProgressStore = create<ProgressState>((set, get) => ({
-  // Initial state
+
   workoutLogs: [],
   selectedWorkoutLog: null,
   isLoading: false,
@@ -66,7 +66,7 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
   userId: null,
   streak: 0,
   
-  // Set User ID
+
   setUserId: (userId: string) => set({ userId }),
   
   // Data fetching
@@ -184,7 +184,7 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
     });
   },
   
-  // Save and delete actions
+  
   saveWorkout: async () => {
     console.log("saveWorkout in store called");
     const { currentWorkout, userId } = get();
@@ -197,7 +197,7 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
 
     set({ isLoading: true });
 
-    // Use a temporary ID for the key, then let firestore create the real one
+    
     const finalWorkout: Omit<WorkoutLog, "createdAt" | "updatedAt"> = {
       id: currentWorkout.id || doc(collection(getFirestore(), "temp")).id,
       userId: userId,
@@ -231,13 +231,13 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
       const { success, error } = await deleteWorkoutLog(logId);
       
       if (success) {
-        // Update state
+        
         set(state => ({
           workoutLogs: state.workoutLogs.filter(log => log.id !== logId),
           isLoading: false
         }));
         
-        // Refresh progress stats for the updated user
+        
         const userId = get().workoutLogs.find(log => log.id === logId)?.userId;
         if (userId) {
           await get().fetchProgressStats(userId);
@@ -261,7 +261,7 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
       return;
     }
 
-    // Create a set of unique dates (YYYY-MM-DD) from the logs
+    
     const workoutDates = new Set(
       workoutLogs.map(log => {
         const date = new Date(log.date);
@@ -272,28 +272,27 @@ export const useProgressStore = create<ProgressState>((set, get) => ({
     let currentStreak = 0;
     const today = new Date();
 
-    // Check if today is a workout day
+    
     const todayStr = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
     if (workoutDates.has(todayStr)) {
       currentStreak = 1;
     }
 
-    // Check for consecutive days backwards from yesterday
     for (let i = 1; i < workoutLogs.length + 1; i++) {
       const dateToCheck = new Date();
       dateToCheck.setDate(today.getDate() - i);
       const dateStr = `${dateToCheck.getFullYear()}-${String(dateToCheck.getMonth() + 1).padStart(2, '0')}-${String(dateToCheck.getDate()).padStart(2, '0')}`;
       
       if (workoutDates.has(dateStr)) {
-        if(currentStreak > 0) currentStreak++; // only increment if we have a streak from today
-        else if (i===1) currentStreak = 1; // start streak from yesterday if today is not a workout day
+        if(currentStreak > 0) currentStreak++; 
+        else if (i===1) currentStreak = 1;
       } else {
-        // if today is not a workout day and yesterday is not, streak must be 0
+
         if (i===1 && currentStreak === 0) {
             set({ streak: 0 });
             return;
         }
-        break; // Streak is broken
+        break; 
       }
     }
     

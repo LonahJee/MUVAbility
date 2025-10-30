@@ -44,7 +44,7 @@ export interface ExerciseFilter {
   type?: string;
 }
 
-// Helper function to display formatted versions of the enum values
+
 export const formatMobilityType = (type: MobilityType): string => {
   const formattedTypes: Record<MobilityType, string> = {
     wheelchair: 'Wheelchair Users',

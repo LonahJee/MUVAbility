@@ -152,13 +152,13 @@ export default function UserProfileSetup() {
       const currentValues = prev[category] as string[];
       
       if (currentValues.includes(value)) {
-        // Remove the value if it's already selected
+
         return {
           ...prev,
           [category]: currentValues.filter(item => item !== value)
         };
       } else {
-        // Add the value if it's not selected
+        
         return {
           ...prev,
           [category]: [...currentValues, value]

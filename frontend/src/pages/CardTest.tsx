@@ -3,7 +3,7 @@ import ExerciseCard from 'components/ExerciseCard'; // Corrected import
 import { Exercise } from 'utils/types';
 
 const CardTest = () => {
-  // Hardcoded, known-good data for a single exercise
+  
   const testExercise: Exercise = {
     id: "test-001",
     name: "Isolated Test: Elastic Band Row",

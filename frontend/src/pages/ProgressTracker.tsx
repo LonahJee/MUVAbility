@@ -29,7 +29,7 @@ export default function ProgressTracker() {
 
   const { exercises } = useExerciseStore();
 
-  // Create a memoized list of unique exercises that have been logged
+  
   const uniqueLoggedExercises = useMemo(() => {
     return [
       ...new Set(
@@ -55,7 +55,7 @@ export default function ProgressTracker() {
     exerciseName: string | null
   ) => {
     if (!exerciseName) {
-      return []; // Return empty data if no exercise is selected
+      return []; 
     }
 
     return workoutLogs
@@ -67,7 +67,7 @@ export default function ProgressTracker() {
           return null;
         }
         
-        // Find the max value for the metric across all sets of that specific exercise
+        
         const maxValue = Math.max(
           0,
           ...relevantExercises.flatMap(ex => 
@@ -103,7 +103,7 @@ export default function ProgressTracker() {
 
   useEffect(() => {
     if (activeTab === "history" && workoutLogs.length > 0) {
-      // Use a timeout to ensure the DOM has updated before scrolling
+      
       setTimeout(() => {
         historyScrollRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);

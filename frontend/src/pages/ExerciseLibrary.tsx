@@ -30,7 +30,7 @@ const ExerciseLibrary = () => {
   const { favoriteIds, toggleFavorite, loadFavorites } = useFavoritesStore();
   
   const navigate = useNavigate();
-  // 1. Connect to your exercise store to get data and functions
+  // 1. Connect to exercise store to get data and functions
   const {
     exercises,
     filter,
@@ -61,16 +61,16 @@ const ExerciseLibrary = () => {
   return 0;
 }): [];
 
-  // 2. Fetch the exercises once when the page first loads
+  
   useEffect(() => {
     const initializeExercises = async () => {
-      // First, try to fetch exercises
+      
       await fetchExercises();
       
-      // After fetching, check the store's state
+      
       const { exercises } = useExerciseStore.getState();
       
-      // If the database is empty, seed it
+      
       if (exercises.length === 0) {
         console.log("No exercises found, seeding database...");
         await seedExercises();
@@ -89,7 +89,7 @@ const ExerciseLibrary = () => {
 
   const handleFilterChange = (filterKey, value) => {
     const newFilter = { ...filter, [filterKey]: value === 'all' ? undefined : value };
-    // Remove undefined keys
+    
     Object.keys(newFilter).forEach(key => newFilter[key] === undefined && delete newFilter[key]);
     fetchExercises(newFilter);
     setFilter(newFilter);

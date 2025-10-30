@@ -45,7 +45,7 @@ export const WorkoutLogForm: React.FC = () => {
   };
 
   const handleAddExercise = () => {
-    // Replace with a modal to select from an exercise library
+
     addExerciseToWorkout({
       id: `ex-${Date.now()}`,
       exerciseId: "temp-id",

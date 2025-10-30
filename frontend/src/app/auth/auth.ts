@@ -21,8 +21,6 @@ const validateConfig = () => {
 
 /**
  * Sign in with Google popup.
- *
- * TODO: Set providers based on config
  */
 const signInWithGoogle = async (): Promise<UserCredential | null> => {
   const provider = new GoogleAuthProvider();

@@ -35,7 +35,7 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Use the provided filter or the current filter in the store
+
       const filterToUse = filter || get().filter;
       const { success, exercises, error } = await getExercises(filterToUse);
       
@@ -68,11 +68,11 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
   },
 
   setFilter: (partialFilter: Partial<ExerciseFilter>) => {
-    // Update the filter with the new values
+    
     const newFilter = { ...get().filter, ...partialFilter };
     set({ filter: newFilter });
     
-    // Fetch exercises with the updated filter
+    
     get().fetchExercises(newFilter);
   },
   
@@ -85,10 +85,10 @@ export const useExerciseStore = create<ExerciseState>((set, get) => ({
     set({ isLoading: true, error: null });
     
     try {
-      // Seed exercises first (will only add if none exist)
+
       await seedExercises();
       
-      // Then fetch all exercises
+      
       const { success, exercises, error } = await getExercises();
       
       if (success && exercises) {
